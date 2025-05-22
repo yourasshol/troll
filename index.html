@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timed Error Windows</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button onclick="triggerErrors()">Click me!</button>
+
+    <script>
+        function triggerErrors() {
+            let windows = [];
+
+            for (let i = 0; i < 10
+                 0; i++) {
+                setTimeout(() => {
+                    let randomX = Math.floor(Math.random() * window.innerWidth * 0.8);
+                    let randomY = Math.floor(Math.random() * window.innerHeight * 0.8);
+
+                    let errorWin = window.open("about:blank", "_blank", `width=400,height=200,left=${randomX},top=${randomY}`);
+
+                    if (errorWin) {
+                        errorWin.document.write("<h1 style='color: red; text-align: center;'>ERROR!</h1>");
+                        errorWin.document.write("<p style='text-align: center;'>Critical System Failure Detected...</p>");
+
+                        windows.push(errorWin);
+                    }
+                }, i * 1); // Opens instantly
+            }
+
+            // Close all windows after 10 seconds
+            setTimeout(() => {
+                windows.forEach(win => win.close());
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
