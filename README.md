@@ -1,2 +1,2 @@
 # troll
-aaudhukyvyrsafuyasjgttsyjfy7pdtyryuaewfuywdudyb
+WARNING: DO NOT USE THIS THIS IS A TROLL FOR YOUR FRIENDS!
