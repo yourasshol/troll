@@ -13,8 +13,7 @@
         function triggerErrors() {
             let windows = [];
 
-            for (let i = 0; i < 10
-                 0; i++) {
+            for (let i = 0; i < 100; i++) { // Fixed loop syntax
                 setTimeout(() => {
                     let randomX = Math.floor(Math.random() * window.innerWidth * 0.8);
                     let randomY = Math.floor(Math.random() * window.innerHeight * 0.8);
@@ -30,7 +29,7 @@
                 }, i * 1); // Opens instantly
             }
 
-            // Close all windows after 10 seconds
+            // Close all windows after 5 seconds
             setTimeout(() => {
                 windows.forEach(win => win.close());
             }, 5000);
@@ -38,3 +37,4 @@
     </script>
 </body>
 </html>
+
