@@ -3,42 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Limited Pop-ups</title>
+    <title>Clap to Close Pop-ups</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <button onclick="triggerErrors()">Click me!</button>
+    <button onclick="start()">Start</button>
 
     <script>
         let windows = [];
-        const maxWindows = 15;
+        let maxWindows;
+        let audioContext;
+        let analyser;
+        let microphone;
+
+        async function start() {
+            // Ask for pop-up count
+            maxWindows = parseInt(prompt("How many pop-ups would you like to open? (Max: 15)"), 10);
+            if (isNaN(maxWindows) || maxWindows <= 0 || maxWindows > 15) {
+                alert("Please enter a valid number between 1 and 15.");
+                return;
+            }
+
+            // Request microphone access
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                setupAudio(stream);
+            } catch (err) {
+                alert("Microphone access denied! Pop-ups will open, but clapping won't close them.");
+            }
+
+            triggerErrors();
+        }
+
+        function setupAudio(stream) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            microphone = audioContext.createMediaStreamSource(stream);
+            microphone.connect(analyser);
+            analyser.fftSize = 256;
+
+            // Start listening for claps
+            detectClap();
+        }
+
+        function detectClap() {
+            const buffer = new Uint8Array(analyser.frequencyBinCount);
+            setInterval(() => {
+                analyser.getByteFrequencyData(buffer);
+                let volume = buffer.reduce((sum, value) => sum + value, 0) / buffer.length;
+
+                if (volume > 150) { // Adjust sensitivity
+                    closePopups();
+                }
+            }, 200);
+        }
 
         function triggerErrors() {
-            for (let i = 0; i < maxWindows; i++) {
-                createErrorWindow();
-            }
-
-            // Close all windows after 5 seconds
-            setTimeout(() => {
-                windows.forEach(win => win.close());
-            }, 5000);
-        }
-
-        function createErrorWindow() {
-            if (windows.length >= maxWindows) return;
-
-            let randomX = Math.floor(Math.random() * window.innerWidth * 0.8);
-            let randomY = Math.floor(Math.random() * window.innerHeight * 0.8);
-
-            let errorWin = window.open("about:blank", "_blank", `width=400,height=200,left=${randomX},top=${randomY}`);
-
-            if (errorWin) {
-                errorWin.document.write("<h1 style='color: red; text-align: center;'>ERROR!</h1>");
-                errorWin.document.write("<p style='text-align: center;'>amongus</p>");
-
-                windows.push(errorWin);
-            }
-        }
-    </script>
-</body>
-</html>
+            for (let i = 0; i < maxWindows;
