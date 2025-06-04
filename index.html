@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Endless Error Windows</title>
+    <title>Limited Pop-ups</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,21 +11,12 @@
 
     <script>
         let windows = [];
+        const maxWindows = 15;
 
         function triggerErrors() {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < maxWindows; i++) {
                 createErrorWindow();
             }
-
-            // Monitor windows and create two new ones if one is closed
-            setInterval(() => {
-                windows = windows.filter(win => !win.closed);
-                if (windows.length < 100) { // Prevent infinite explosion
-                    while (windows.length < 100) {
-                        createErrorWindow();
-                    }
-                }
-            }, 1000);
 
             // Close all windows after 30 seconds
             setTimeout(() => {
@@ -34,6 +25,8 @@
         }
 
         function createErrorWindow() {
+            if (windows.length >= maxWindows) return;
+
             let randomX = Math.floor(Math.random() * window.innerWidth * 0.8);
             let randomY = Math.floor(Math.random() * window.innerHeight * 0.8);
 
@@ -49,5 +42,3 @@
     </script>
 </body>
 </html>
-
-
